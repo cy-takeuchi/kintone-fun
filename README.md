@@ -1,0 +1,5 @@
+# kintone-fun
+
+```sh
+$ ./kintone
+```

@@ -3,34 +3,34 @@
 FILE=logo.txt
 LOOP=10
 
-function INIT {
+INIT() {
 	echo -e "\033[2J"
 	echo -e "\033[1;1f"
 }
 
-function CURSOR_DOWN {
+CURSOR_DOWN() {
 	echo -en "\033[${1}B"
 }
-function CURSOR_FORWARD {
+CURSOR_FORWARD() {
 	echo -en "\033[${1}C"
 }
-function DELETE_CHARACTER {
+DELETE_CHARACTER() {
   echo -en "\033[${1}P"
 }
-function HORIZONTAL_AND_VERTICAL_POSITION {
+HORIZONTAL_AND_VERTICAL_POSITION() {
   echo -en "\033[${1};${2}f"
 }
 
-function COLOR_YELLOW_BACKGROUND {
+COLOR_YELLOW_BACKGROUND() {
 	echo -en "\033[43m"
 }
-function COLOR_BLACK_BACKGROUND {
+COLOR_BLACK_BACKGROUND() {
 	echo -en "\033[40m"
 }
-function COLOR_WHITE_BACKGROUND {
+COLOR_WHITE_BACKGROUND() {
 	echo -en "\033[47m"
 }
-function COLOR_DEFAULT {
+COLOR_DEFAULT() {
 	echo -en "\033[0m"
 }
 

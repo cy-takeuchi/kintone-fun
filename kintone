@@ -3,70 +3,94 @@
 FILE=logo.txt
 LOOP=10
 
-function INIT {
+INIT() {
 	echo -e "\033[2J"
 	echo -e "\033[1;1f"
 }
 
-function CURSOR_DOWN {
+CURSOR_DOWN() {
 	echo -en "\033[${1}B"
 }
-function CURSOR_FORWARD {
+CURSOR_FORWARD() {
 	echo -en "\033[${1}C"
 }
+DELETE_CHARACTER() {
+  echo -en "\033[${1}P"
+}
+HORIZONTAL_AND_VERTICAL_POSITION() {
+  echo -en "\033[${1};${2}f"
+}
 
-
-function COLOR_YELLOW_BACKGROUND {
+COLOR_YELLOW_BACKGROUND() {
 	echo -en "\033[43m"
 }
-function COLOR_BLACK_BACKGROUND {
+COLOR_BLACK_BACKGROUND() {
 	echo -en "\033[40m"
 }
-function COLOR_WHITE_BACKGROUND {
+COLOR_WHITE_BACKGROUND() {
 	echo -en "\033[47m"
 }
-function COLOR_DEFAULT {
+COLOR_DEFAULT() {
 	echo -en "\033[0m"
 }
 
 OLD_IFS=$IFS
 IFS=""
-while [ $LOOP -ge 0 ]
+
+
+# print logo
+
+INIT
+Y=0
+while read LINE
 do
-	INIT
-
-	Y=0
-	while read LINE
+	X=$LOOP
+	CURSOR_FORWARD $X
+	echo "$LINE" | while read -N 1 CHAR
 	do
-		X=$LOOP
-		CURSOR_FORWARD $X
-		echo "$LINE" | while read -N 1 CHAR
-		do
-      if [ "x$CHAR" = "x " ]
-			then
-				COLOR_YELLOW_BACKGROUND
-				echo -n " "
-      elif [ "x$CHAR" = "x@" ]
-      then
-				COLOR_BLACK_BACKGROUND
-				echo -n " "
-      elif [ "x$CHAR" = "x8" ]
-      then
-				COLOR_WHITE_BACKGROUND
-				echo -n " "
-			else
-				echo -n "$CHAR"
-			fi
+    if [ "x$CHAR" = "x " ]
+		then
+			COLOR_YELLOW_BACKGROUND
+			echo -n " "
+    elif [ "x$CHAR" = "x@" ]
+    then
+			COLOR_BLACK_BACKGROUND
+			echo -n " "
+    elif [ "x$CHAR" = "x8" ]
+    then
+			COLOR_WHITE_BACKGROUND
+			echo -n " "
+		else
+			echo -n "$CHAR"
+		fi
 
-			X=$(($X + 1))
-		done
-		Y=$(($Y + 1))
-	done < $FILE
+		X=$(($X + 1))
+	done
+	Y=$(($Y + 1))
+done < $FILE
+
+COLOR_DEFAULT
+sleep 0.2
+
+
+# move logo
+
+HEIGHT=$Y
+while [ $LOOP -gt 0 ]
+do
+  HORIZONTAL_AND_VERTICAL_POSITION 1 1
+  Y=0
+  while [ $Y -le $HEIGHT ]
+  do
+    DELETE_CHARACTER 1
+    CURSOR_DOWN
+    Y=$(($Y + 1))
+  done
 
 	LOOP=$(($LOOP - 1))
-	COLOR_DEFAULT
   sleep 0.2
 done
+
 
 IFS=$OLD_IFS
 
